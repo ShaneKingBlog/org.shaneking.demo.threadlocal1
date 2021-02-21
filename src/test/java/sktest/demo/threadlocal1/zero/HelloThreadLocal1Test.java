@@ -132,7 +132,7 @@ public class HelloThreadLocal1Test {
   }
 
   @Test
-  void testExecutorService() throws ExecutionException, InterruptedException {
+  void testThreadPool() throws ExecutionException, InterruptedException {
     ThreadLocal<Map<String, String>> TL = new ThreadLocal<>();
     TL.set(Map0.newHashMap("TLK", "tlv"));
 
