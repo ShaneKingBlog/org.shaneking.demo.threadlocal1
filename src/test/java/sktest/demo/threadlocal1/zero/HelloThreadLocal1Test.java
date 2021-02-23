@@ -252,4 +252,74 @@ public class HelloThreadLocal1Test {
 
      */
   }
+
+  @Test
+  void testReference() throws InterruptedException {
+    InheritableThreadLocal<Map<String, String>> ITL = new InheritableThreadLocal<>();
+    ITL.set(Map0.newHashMap("ITLK", "itlv"));
+
+    Thread t1 = new Thread(() -> {
+      int i = 0;
+      while (i < 10) {
+        if (ITL.get() != null) {
+          if (i % 2 == 0) {
+            ITL.get().clear();
+          } else {
+            ITL.get().put("ITLK", "itlv" + System.currentTimeMillis());
+          }
+        }
+        i++;
+        try {
+          Thread.sleep(1000 / 2);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+    });
+
+    Thread t2 = new Thread(() -> {
+      int i = 0;
+      while (i < 10) {
+        if (ITL.get() != null) {
+          log.info(OM3.lp(i, ITL.get().get("ITLK")));
+          int fi = i;
+          new Thread(() -> log.info(OM3.lp(fi, ITL.get().get("ITLK")))).start();
+        }
+        i++;
+        try {
+          Thread.sleep(1000 / 2);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+    });
+
+    t2.start();
+    t1.start();
+
+    Thread.sleep(10 * 1000);
+    /*
+2021-02-22 21:39:39.697 INFO  Thread-2 sktest.demo.threadlocal1.zero.HelloThreadLocal1Test:284 - {"p":["itlv"],"l":0}
+2021-02-22 21:39:39.710 INFO  Thread-3 sktest.demo.threadlocal1.zero.HelloThreadLocal1Test:286 - {"p":["itlv1614001179568"],"l":0}
+2021-02-22 21:39:40.215 INFO  Thread-2 sktest.demo.threadlocal1.zero.HelloThreadLocal1Test:284 - {"p":[null],"l":1}
+2021-02-22 21:39:40.216 INFO  Thread-4 sktest.demo.threadlocal1.zero.HelloThreadLocal1Test:286 - {"p":[null],"l":1}
+2021-02-22 21:39:40.722 INFO  Thread-2 sktest.demo.threadlocal1.zero.HelloThreadLocal1Test:284 - {"p":["itlv1614001180571"],"l":2}
+2021-02-22 21:39:40.725 INFO  Thread-5 sktest.demo.threadlocal1.zero.HelloThreadLocal1Test:286 - {"p":["itlv1614001180571"],"l":2}
+2021-02-22 21:39:41.229 INFO  Thread-2 sktest.demo.threadlocal1.zero.HelloThreadLocal1Test:284 - {"p":[null],"l":3}
+2021-02-22 21:39:41.229 INFO  Thread-6 sktest.demo.threadlocal1.zero.HelloThreadLocal1Test:286 - {"p":[null],"l":3}
+2021-02-22 21:39:41.729 INFO  Thread-2 sktest.demo.threadlocal1.zero.HelloThreadLocal1Test:284 - {"p":["itlv1614001181574"],"l":4}
+2021-02-22 21:39:41.731 INFO  Thread-7 sktest.demo.threadlocal1.zero.HelloThreadLocal1Test:286 - {"p":["itlv1614001181574"],"l":4}
+2021-02-22 21:39:42.231 INFO  Thread-2 sktest.demo.threadlocal1.zero.HelloThreadLocal1Test:284 - {"p":[null],"l":5}
+2021-02-22 21:39:42.232 INFO  Thread-8 sktest.demo.threadlocal1.zero.HelloThreadLocal1Test:286 - {"p":[null],"l":5}
+2021-02-22 21:39:42.733 INFO  Thread-2 sktest.demo.threadlocal1.zero.HelloThreadLocal1Test:284 - {"p":["itlv1614001182581"],"l":6}
+2021-02-22 21:39:42.734 INFO  Thread-9 sktest.demo.threadlocal1.zero.HelloThreadLocal1Test:286 - {"p":["itlv1614001182581"],"l":6}
+2021-02-22 21:39:43.235 INFO  Thread-2 sktest.demo.threadlocal1.zero.HelloThreadLocal1Test:284 - {"p":[null],"l":7}
+2021-02-22 21:39:43.236 INFO  Thread-10 sktest.demo.threadlocal1.zero.HelloThreadLocal1Test:286 - {"p":[null],"l":7}
+2021-02-22 21:39:43.737 INFO  Thread-2 sktest.demo.threadlocal1.zero.HelloThreadLocal1Test:284 - {"p":["itlv1614001183585"],"l":8}
+2021-02-22 21:39:43.741 INFO  Thread-11 sktest.demo.threadlocal1.zero.HelloThreadLocal1Test:286 - {"p":["itlv1614001183585"],"l":8}
+2021-02-22 21:39:44.244 INFO  Thread-2 sktest.demo.threadlocal1.zero.HelloThreadLocal1Test:284 - {"p":["itlv1614001183585"],"l":9}
+2021-02-22 21:39:44.245 INFO  Thread-12 sktest.demo.threadlocal1.zero.HelloThreadLocal1Test:286 - {"p":["itlv1614001183585"],"l":9}
+
+     */
+  }
 }
