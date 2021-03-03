@@ -21,7 +21,7 @@
       <totalSizeCap>5GB</totalSizeCap>
     </rollingPolicy>
   </appender>
-  <root level="debug"><!-- >debug -->
+  <root level="info"><!-- >debug -->
     <appender-ref ref="CONSOLE"/>
     <appender-ref ref="FILE"/>
   </root>
